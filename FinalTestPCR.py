@@ -39,7 +39,7 @@ model.add(keras.layers.Dense(1, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy', optimizer=keras.optimizers.SGD(learning_rate=0.1), metrics=['accuracy'])
 
-model.load_weights('./models/fold_1_model_one_layer_1.hdf5')
+model.load_weights('./classification_models/fold_1_model_one_layer_1.hdf5')
 
 pred = model.predict(np.array(test_df.iloc[:,1:]))
 
