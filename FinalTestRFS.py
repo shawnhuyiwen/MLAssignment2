@@ -6,8 +6,24 @@ test_set_dir = 'testDatasetExample.xls'
 output_dir = 'predictedRFS.csv'
 test_df = pd.read_excel(test_set_dir)
 
+invalid = []
+invalid_ID = []
+
+# delete invalid data
+for index, row in test_df.iterrows():
+    for key in row.keys():
+        if row[key] == 999:
+            invalid.append(index)
+            invalid_ID.append(row['ID'])
+            
+test_df = test_df.drop(index = invalid)
+
 # construct the output dict
 out_dict = {'ID':[], 'RFSPredicted':[]}
+
+for id in invalid_ID:
+    out_dict['ID'].append(id)
+    out_dict['RFSPredicted'].append('Invalid data provided')
 
 # delete the poorly coorelated features
 poorly_coor = ['ER', 'PgR', 'TrippleNegative', 'HistologyType', 'LNStatus', 
@@ -53,7 +69,7 @@ for elem in pred:
 for id in test_df['ID']:
     out_dict['ID'].append(id)
 
-out_dict['RFSPredicted'] = predicted
+out_dict['RFSPredicted'] = out_dict['RFSPredicted'] + predicted
 
 out_df = pd.DataFrame(out_dict)
 out_df.to_csv(output_dir, index=False)

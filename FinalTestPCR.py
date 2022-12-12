@@ -7,8 +7,24 @@ test_set_dir = 'testDatasetExample.xls'
 output_dir = 'predictedPCR.csv'
 test_df = pd.read_excel(test_set_dir)
 
+invalid = []
+invalid_ID = []
+
+# delete invalid data
+for index, row in test_df.iterrows():
+    for key in row.keys():
+        if row[key] == 999:
+            invalid.append(index)
+            invalid_ID.append(row['ID'])
+            
+test_df = test_df.drop(index = invalid)
+
 # construct the output dict
 out_dict = {'ID':[], 'PCRPredicted':[]}
+
+for id in invalid_ID:
+    out_dict['ID'].append(id)
+    out_dict['PCRPredicted'].append('Invalid data provided')
 
 # delete the poorly coorelated features
 poorly_coor = ['Age', 'original_shape_Elongation', 'original_shape_SurfaceArea', 
@@ -57,7 +73,9 @@ for id in test_df['ID']:
     out_dict['ID'].append(id)
 
 rounded = [round(x) for x in predicted]
-out_dict['PCRPredicted'] = rounded
+out_dict['PCRPredicted'] = out_dict['PCRPredicted'] + rounded
+
+print(out_dict)
 
 out_df = pd.DataFrame(out_dict)
 out_df.to_csv(output_dir, index=False)
