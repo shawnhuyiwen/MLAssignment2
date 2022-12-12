@@ -54,7 +54,7 @@ model=keras.models.Sequential()
 model.add(keras.layers.Dense(32, input_shape=(test_df.iloc[:,1:].shape[1],), activation="relu"))
 model.add(keras.layers.Dense(1, activation='linear'))
 
-model.compile(loss='mean_squared_error', optimizer=keras.optimizers.SGD(learning_rate=0.001), metrics=[keras.metrics.MeanSquaredError()])
+model.compile(loss='mean_absolute_error', optimizer=keras.optimizers.SGD(learning_rate=0.001), metrics=[keras.metrics.MeanAbsoluteError()])
 
 # load the weights from the best trained model
 model.load_weights('./regression_models/fold_5_model_one_layer_1.hdf5')

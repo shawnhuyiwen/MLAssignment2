@@ -75,8 +75,6 @@ for id in test_df['ID']:
 rounded = [round(x) for x in predicted]
 out_dict['PCRPredicted'] = out_dict['PCRPredicted'] + rounded
 
-print(out_dict)
-
 out_df = pd.DataFrame(out_dict)
 out_df.to_csv(output_dir, index=False)
 
