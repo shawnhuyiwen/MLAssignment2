@@ -7,8 +7,10 @@ test_set_dir = 'testDatasetExample.xls'
 output_dir = 'predictedPCR.csv'
 test_df = pd.read_excel(test_set_dir)
 
+# construct the output dict
 out_dict = {'ID':[], 'PCRPredicted':[]}
 
+# delete the poorly coorelated features
 poorly_coor = ['Age', 'original_shape_Elongation', 'original_shape_SurfaceArea', 
                'original_firstorder_90Percentile', 'original_firstorder_Energy', 
                'original_firstorder_Kurtosis', 'original_firstorder_Maximum', 
@@ -30,19 +32,23 @@ test_df = test_df.drop(poorly_coor, axis=1)
 
 from sklearn.preprocessing import StandardScaler
 
+# perform zero means normalisation on the features
 scaler = StandardScaler()
 test_df.iloc[:,1:] = scaler.fit_transform(test_df.iloc[:,1:])
 
+# set up the ANN model
 model=keras.models.Sequential()
 model.add(keras.layers.Dense(32, input_shape=(test_df.iloc[:,1:].shape[1],), activation="relu"))
 model.add(keras.layers.Dense(1, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy', optimizer=keras.optimizers.SGD(learning_rate=0.1), metrics=['accuracy'])
 
+# load the weights from the best trained model
 model.load_weights('./classification_models/fold_1_model_one_layer_1.hdf5')
 
 pred = model.predict(np.array(test_df.iloc[:,1:]))
 
+# store the prediction into the list
 predicted = []
 for elem in pred:
     predicted.append(elem[0])
